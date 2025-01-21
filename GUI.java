@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.io.*;
 
 public class GUI implements ActionListener
 {
@@ -33,8 +36,16 @@ public class GUI implements ActionListener
     JButton checkoutButton = new JButton("Check Out");
     JButton emptyButton = new JButton("Empty Cart - Start A New Order");
     JButton exitButton = new JButton("Exit (Close App)");
+
+    HashMap<String, item> inventory = new HashMap<>();
     
     public GUI()
+    {
+        this.scanInventory();
+        this.buildGUI();
+    }
+
+    private void buildGUI()
     {
         entryPanel.setBackground(new Color(0xABE6CF));
         entryPanel.setBounds(0,0,800,250);
@@ -138,7 +149,7 @@ public class GUI implements ActionListener
         exitButton.addActionListener(e -> System.exit(0));
 
 
-        frame.setTitle("Nite Dot Com");
+        frame.setTitle("Nile Dot Com");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setLayout(null);
@@ -148,6 +159,26 @@ public class GUI implements ActionListener
         frame.add(buttonPanel);
         frame.setVisible(true);
 
+    }
 
+    private void scanInventory()
+    {
+        try 
+        {
+            Scanner in = new Scanner(new File("inventory.csv"));
+
+            while (in.hasNextLine())
+            {
+                String curLine = in.nextLine();
+                String[] infoArr = curLine.split(", ");
+                item newItem = new item(infoArr[0], infoArr[1], infoArr[2], Integer.parseInt(infoArr[3]), Double.parseDouble(infoArr[4]));
+
+                inventory.put(infoArr[0], newItem);
+            }
+        } 
+        catch (IOException e) 
+        {
+            //TODO add a notification for not found
+        }
     }
 }
