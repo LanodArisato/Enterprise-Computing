@@ -62,7 +62,10 @@ public class GUI implements ActionListener
         itemDetailsDisplay.setCaretColor(Color.WHITE);
         itemSubtotalDisplay.setCaretColor(Color.WHITE);
 
-        entryPanel.add(itemID); //TODO Change text colors of labels in topPanel 
+        itemDetails.setForeground(new Color(0xFF677D));
+        itemSubtotal.setForeground(Color.MAGENTA);
+
+        entryPanel.add(itemID); 
         entryPanel.add(itemIDEntry);
         entryPanel.add(itemQuantity);
         entryPanel.add(itemQuantityEntry);
