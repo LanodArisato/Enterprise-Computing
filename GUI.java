@@ -10,10 +10,10 @@ public class GUI implements ActionListener
     JFrame frame = new JFrame();
 
     JPanel entryPanel = new JPanel();
-    JLabel itemID = new JLabel("Enter item ID for Item #:");
-    JLabel itemQuantity = new JLabel("Enter quantity for Item #:");
-    JLabel itemDetails = new JLabel("Details for Item #:");
-    JLabel itemSubtotal = new JLabel("Current Subtotal for x item(s):");
+    JLabel itemID = new JLabel("                                                                                       Enter item ID for Item #:");
+    JLabel itemQuantity = new JLabel("                                                                                     Enter quantity for Item #:");
+    JLabel itemDetails = new JLabel("                                                                                                  Details for Item #:");
+    JLabel itemSubtotal = new JLabel("                                                                           Current Subtotal for x item(s):");
     JTextField itemIDEntry = new JTextField();
     JTextField itemQuantityEntry = new JTextField();
     JTextField itemDetailsDisplay = new JTextField();
@@ -27,7 +27,7 @@ public class GUI implements ActionListener
     JTextField thirdCartItem = new JTextField();
     JTextField fourthCartItem = new JTextField();
     JTextField fifthCartItem = new JTextField();
-    Dimension cartBoxDimension = new Dimension(800,30);
+    Dimension cartBoxDimension = new Dimension(750,30);
 
     JPanel buttonPanel = new JPanel();
     JButton searchButton = new JButton("Search for item #");
