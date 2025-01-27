@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Stack;
 import java.io.*;
 
 public class GUI implements ActionListener
@@ -38,15 +39,25 @@ public class GUI implements ActionListener
     JButton exitButton = new JButton("Exit (Close App)");
 
     HashMap<String, item> inventory = new HashMap<>();
+    Stack<item> cart = new Stack<>();
+    int cartCounter;
+    double subtotal;
     
     public GUI()
     {
         this.scanInventory();
         this.buildGUI();
-    }
+
+        addButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+        checkoutButton.setEnabled(false);
+        }
 
     private void buildGUI()
     {
+        cartCounter = 0;
+        subtotal = 0;
+
         entryPanel.setBackground(new Color(0xABE6CF));
         entryPanel.setBounds(0,0,800,250);
         entryPanel.setLayout(new GridLayout(4,2,10,20)); //TODO Place text closer to boxes (GridBagLayout maybe?)
@@ -150,6 +161,8 @@ public class GUI implements ActionListener
         buttonPanel.add(exitButton);
 
         exitButton.addActionListener(e -> System.exit(0));
+        searchButton.addActionListener(e -> searchItem());
+        addButton.addActionListener(e -> addCart());
 
 
         frame.setTitle("Nile Dot Com");
@@ -183,5 +196,110 @@ public class GUI implements ActionListener
         {
             //TODO add a notification for not found
         }
+    }
+
+    private void searchItem()
+    {
+        String itemID = itemIDEntry.getText();
+        int itemQuantity = Integer.parseInt(itemQuantityEntry.getText());
+
+        item curItem = inventory.get(itemID);
+
+        if (curItem == null)
+        {
+            //TODO error interrupt 
+        }
+        else if (curItem.getStock() == false)
+        {
+            //TODO OOS error
+        }
+        else if (curItem.getQuantity() < itemQuantity)
+        {
+            //TODO quantity error
+        }
+        else if (curItem.getStock() == true && curItem.getQuantity() >= itemQuantity)
+        {
+            itemDetailsDisplay.setText(curItem.toString() + " " + itemQuantity + " " + calcDiscount(itemQuantity) + "% $" + (curItem.getPrice() * (1 - (calcDiscount(itemQuantity)/100))));
+        }
+
+        addButton.setEnabled(true);
+        searchButton.setEnabled(false);
+    }
+
+    private void addCart()
+    {
+        String itemID = itemIDEntry.getText();
+        int itemQuantity = Integer.parseInt(itemQuantityEntry.getText());
+
+        item curItem = inventory.get(itemID);
+
+        item cartItem = new item(itemID, curItem.getDesc(), curItem.getStockString(), itemQuantity, curItem.getPrice(), true);
+
+        curItem.adjustStock(-itemQuantity);
+
+        cart.add(cartItem);
+        cartCounter++;
+
+        switch (cartCounter)
+        {
+        case(1):
+        firstCartItem.setText("Item 1 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        break;
+
+        case(2):
+        secondCartItem.setText("Item 2 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        break;
+
+        case(3):
+        thirdCartItem.setText("Item 3 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        break;
+
+        case(4):
+        fourthCartItem.setText("Item 4 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        break;
+
+        case(5):
+        fifthCartItem.setText("Item 5 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        break;
+        }
+
+        subtotal += (cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)));
+
+
+        itemSubtotalDisplay.setText("$" + subtotal);
+        cartStatus.setText("Your Cart Currently Contains " + cartCounter + " Item(s)");
+        itemIDEntry.setText("");
+        itemQuantityEntry.setText("");
+
+        addButton.setEnabled(false);
+        deleteButton.setEnabled(true);
+        checkoutButton.setEnabled(true);
+        searchButton.setEnabled(true);
+        addButton.setEnabled(false);
+        }
+
+    private int calcDiscount(int quantity)
+    {
+        if (quantity <= 4)
+        {
+            return 0;
+        }
+        else if(quantity <= 9)
+        {
+            return 10;
+        }
+        else if(quantity <= 14)
+        {
+            return 15;
+        }
+        else if(quantity >= 15)
+        {
+            return 20;
+        }
+        else
+        {
+            return 0;
+        }
+
     }
 }
