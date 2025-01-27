@@ -200,10 +200,10 @@ public class GUI implements ActionListener
 
     private void searchItem()
     {
-        String itemID = itemIDEntry.getText();
-        int itemQuantity = Integer.parseInt(itemQuantityEntry.getText());
+        String itemIn = itemIDEntry.getText();
+        int itemQIn = Integer.parseInt(itemQuantityEntry.getText());
 
-        item curItem = inventory.get(itemID);
+        item curItem = inventory.get(itemIn);
 
         if (curItem == null)
         {
@@ -213,29 +213,31 @@ public class GUI implements ActionListener
         {
             //TODO OOS error
         }
-        else if (curItem.getQuantity() < itemQuantity)
+        else if (curItem.getQuantity() < itemQIn)
         {
             //TODO quantity error
         }
-        else if (curItem.getStock() == true && curItem.getQuantity() >= itemQuantity)
+        else if (curItem.getStock() == true && curItem.getQuantity() >= itemQIn)
         {
-            itemDetailsDisplay.setText(curItem.toString() + " " + itemQuantity + " " + calcDiscount(itemQuantity) + "% $" + (curItem.getPrice() * (1 - (calcDiscount(itemQuantity)/100))));
+            itemDetailsDisplay.setText(curItem.toString() + " " + itemQIn + " " + calcDiscount(itemQIn) + "% $" + (curItem.getPrice() * (1 - (calcDiscount(itemQIn)/100))));
         }
 
         addButton.setEnabled(true);
         searchButton.setEnabled(false);
+
+        itemDetails.setText("Details for Item #" + (cartCounter + 1));
     }
 
     private void addCart()
     {
-        String itemID = itemIDEntry.getText();
-        int itemQuantity = Integer.parseInt(itemQuantityEntry.getText());
+        String itemIn = itemIDEntry.getText();
+        int itemQIn = Integer.parseInt(itemQuantityEntry.getText());
 
-        item curItem = inventory.get(itemID);
+        item curItem = inventory.get(itemIn);
 
-        item cartItem = new item(itemID, curItem.getDesc(), curItem.getStockString(), itemQuantity, curItem.getPrice(), true);
+        item cartItem = new item(itemIn, curItem.getDesc(), curItem.getStockString(), itemQIn, curItem.getPrice(), true);
 
-        curItem.adjustStock(-itemQuantity);
+        curItem.adjustStock(-itemQIn);
 
         cart.add(cartItem);
         cartCounter++;
@@ -243,27 +245,27 @@ public class GUI implements ActionListener
         switch (cartCounter)
         {
         case(1):
-        firstCartItem.setText("Item 1 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        firstCartItem.setText("Item 1 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
         break;
 
         case(2):
-        secondCartItem.setText("Item 2 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        secondCartItem.setText("Item 2 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
         break;
 
         case(3):
-        thirdCartItem.setText("Item 3 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        thirdCartItem.setText("Item 3 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
         break;
 
         case(4):
-        fourthCartItem.setText("Item 4 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        fourthCartItem.setText("Item 4 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
         break;
 
         case(5):
-        fifthCartItem.setText("Item 5 - SKU: " + itemID + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQuantity + ", Total: $" + ((cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)))));
+        fifthCartItem.setText("Item 5 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
         break;
         }
 
-        subtotal += (cartItem.getPrice() * itemQuantity) * (1 - (calcDiscount(itemQuantity/100)));
+        subtotal += (cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)));
 
 
         itemSubtotalDisplay.setText("$" + subtotal);
@@ -276,6 +278,12 @@ public class GUI implements ActionListener
         checkoutButton.setEnabled(true);
         searchButton.setEnabled(true);
         addButton.setEnabled(false);
+
+        itemID.setText("Enter Item ID for Item #" + (cartCounter + 1));
+        itemQuantity.setText("Enter Quantity for Item #" + (cartCounter + 1));
+        itemSubtotal.setText("Current Subtotal for " + cartCounter + " Item(s)");
+
+        
         }
 
     private int calcDiscount(int quantity)
