@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 
 public class GUI implements ActionListener
 {
-    JFrame frame = new JFrame();
+    JFrame frame = new JFrame();    //Creates all objects for base GUI components
 
     int cartCounter;
     double subtotal;
@@ -47,7 +47,7 @@ public class GUI implements ActionListener
     HashMap<String, item> inventory = new HashMap<>();
     Stack<item> cart = new Stack<>();
     
-    public GUI()
+    public GUI() //Runs methods inventory handling and base GUI construction, sets base state
     {
         this.scanInventory();
         this.buildGUI();
@@ -57,14 +57,14 @@ public class GUI implements ActionListener
         checkoutButton.setEnabled(false);
         }
 
-    private void buildGUI()
+    private void buildGUI() //Constructs and places all GUI elements
     {
         cartCounter = 0;
         subtotal = 0;
 
         entryPanel.setBackground(new Color(0xABE6CF));
         entryPanel.setBounds(0,0,800,250);
-        entryPanel.setLayout(new GridLayout(4,2,10,20)); //TODO Place text closer to boxes (GridBagLayout maybe?)
+        entryPanel.setLayout(new GridLayout(4,2,10,20));
 
         itemIDEntry.setPreferredSize(entryBoxDimension); 
         itemQuantityEntry.setPreferredSize(entryBoxDimension);
@@ -184,7 +184,7 @@ public class GUI implements ActionListener
 
     }
 
-    private void scanInventory()
+    private void scanInventory() //Scans through inventory file and creates a hashmap of item objects for easy access
     {
         try 
         {
@@ -199,61 +199,63 @@ public class GUI implements ActionListener
                 inventory.put(infoArr[0], newItem);
             }
         } 
-        catch (IOException e) 
+        catch (IOException e) //Dialog box if inventory file is missing
         {
             JOptionPane.showMessageDialog(null, "Inventory file not found", "Nile Dot Com - ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void searchItem()
+    private void searchItem() //Searches through hashamp based on user inputs, handles any errors with user input
     {
         String itemIn = itemIDEntry.getText();
         int itemQIn = Integer.parseInt(itemQuantityEntry.getText());
 
         item curItem = inventory.get(itemIn);
 
-        if (curItem == null)
+        if (curItem == null) //if inventory hasmap does not have an object for the given ID
         {
             JOptionPane.showMessageDialog(null, "Item ID " + itemIn + " not in file", "Nile Dot Com - ERROR", JOptionPane.ERROR_MESSAGE); 
             return;
         }
-        else if (curItem.getStock() == false)
+        else if (curItem.getStock() == false) //if stock field is false
         {
             JOptionPane.showMessageDialog(null, "Sorry, that item is out of stock, please try another item", "Nile Dot Com - ERROR", JOptionPane.ERROR_MESSAGE);  
             itemIDEntry.setText("");
             itemQuantityEntry.setText("");
             return;
         }
-        else if (curItem.getQuantity() < itemQIn)
+        else if (curItem.getQuantity() < itemQIn) //if quantity not available
         {
             JOptionPane.showMessageDialog(null, "Insufficient stock. Only " + curItem.getQuantity() + " on hand. Please reduce the quantity.", "Nile Dot Com - ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        else if (curItem.getStock() == true && curItem.getQuantity() >= itemQIn)
+        else if (curItem.getStock() == true && curItem.getQuantity() >= itemQIn) //if the item is available AND quantity is available
         {
             itemDetailsDisplay.setText(curItem.toString() + " " + itemQIn + " " + calcDiscount(itemQIn) + "% $" + df.format(((curItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         }
-        addButton.setEnabled(true);
+
+        addButton.setEnabled(true); //set new button state for a found item
         searchButton.setEnabled(false);
 
-        itemDetails.setText("Details for Item #" + (cartCounter + 1));
+        itemDetails.setText("Details for Item #" + (cartCounter + 1)); //display found item detail
     }
 
-    private void addCart()
+    private void addCart() //adds an item to the cart using a stack implimentation
     {
         String itemIn = itemIDEntry.getText();
         int itemQIn = Integer.parseInt(itemQuantityEntry.getText());
 
         item curItem = inventory.get(itemIn);
 
+        //creates a new version of an item object for usage in the cart
         item cartItem = new item(itemIn, curItem.getDesc(), curItem.getStockString(), itemQIn, curItem.getPrice(), true);
 
-        curItem.adjustStock(-itemQIn);
+        curItem.adjustStock(-itemQIn); //reduce the quantity in the inventory by the amount added to the cart
 
-        cart.add(cartItem);
+        cart.add(cartItem); //add item to cart stack
         cartCounter++;
 
-        switch (cartCounter)
+        switch (cartCounter) //update text boxes based on current cart position
         {
         case(1):
         firstCartItem.setText("Item 1 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
@@ -278,25 +280,27 @@ public class GUI implements ActionListener
 
         subtotal += (cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)));
 
-
+        //update text fields based on new cart state
         itemSubtotalDisplay.setText("$" + df.format(subtotal));
         cartStatus.setText("Your Cart Currently Contains " + cartCounter + " Item(s)");
         itemIDEntry.setText("");
         itemQuantityEntry.setText("");
 
+        //change button state for next item entry
         addButton.setEnabled(false);
         deleteButton.setEnabled(true);
         checkoutButton.setEnabled(true);
         searchButton.setEnabled(true);
         addButton.setEnabled(false);
 
+        //update text fields based on new cart state
         itemID.setText("Enter Item ID for Item #" + (cartCounter + 1));
         itemQuantity.setText("Enter Quantity for Item #" + (cartCounter + 1));
         itemSubtotal.setText("Current Subtotal for " + cartCounter + " Item(s)");
         searchButton.setText("Search for Item #" + (cartCounter + 1));
         addButton.setText("Add Item #" + (cartCounter + 1) + " To Cart");
 
-        if (cartCounter >= 5)
+        if (cartCounter >= 5) //check for a full cart and change state if needed
         {
             itemIDEntry.setEnabled(false);
             itemQuantityEntry.setEnabled(false);
@@ -306,15 +310,15 @@ public class GUI implements ActionListener
         }
         }
 
-    private void deleteLast()
+    private void deleteLast() //deletes the last item added to the cart while maintaining proper inventory values
     {
-        item toDelete = cart.peek();
+        item toDelete = cart.peek(); 
 
         String delID = toDelete.getID();
 
-        inventory.get(delID).adjustStock(toDelete.getQuantity());
+        inventory.get(delID).adjustStock(toDelete.getQuantity()); //add stock back from cart item to inventory item
 
-        switch (cartCounter)
+        switch (cartCounter) //adjust text field based on current cart position
         {
         case(1):
         firstCartItem.setText("");
@@ -337,16 +341,18 @@ public class GUI implements ActionListener
         break;
         }
 
-        cart.pop();
+        cart.pop(); //remove from stack and adjust counter
         cartCounter--;
 
+        //update text fields for new entry
         itemIDEntry.setText("");
         itemQuantityEntry.setText("");
         itemDetailsDisplay.setText("");
 
+        //calculte new subtotal
         subtotal = subtotal - ((toDelete.getPrice() * toDelete.getQuantity()) * (1 - (calcDiscount((toDelete.getQuantity())/100))));
         
-        if (cartCounter == 0)
+        if (cartCounter == 0) //update subtotal display based on current cart item count
         {
             itemSubtotalDisplay.setText("");
         }
@@ -354,6 +360,8 @@ public class GUI implements ActionListener
         {
             itemSubtotalDisplay.setText("$" + df.format(subtotal));
         }
+
+        //update GUI component states for new item entry
         cartStatus.setText("Your Cart Currently Contains " + cartCounter + " Item(s)");
         itemID.setText("Enter Item ID for Item #" + (cartCounter + 1));
         itemQuantity.setText("Enter Quantity for Item #" + (cartCounter + 1));
@@ -368,10 +376,12 @@ public class GUI implements ActionListener
         itemQuantityEntry.setEnabled(true);
     }
 
-    public void emptyCart()
+    public void emptyCart() //resets GUI to a fresh state, returns all items to inventory
     {
-        cartCounter = 0;
-        subtotal = 0;
+        for(int i = cart.size(); i > 0; i--)
+        {
+            this.deleteLast();
+        }
 
         itemIDEntry.setEnabled(true);
         itemQuantityEntry.setEnabled(true);
@@ -393,7 +403,6 @@ public class GUI implements ActionListener
         searchButton.setText("Search for Item #" + (cartCounter + 1));
         addButton.setText("Add Item #" + (cartCounter + 1) + " To Cart");
         
-        cart.clear();
     }
 
     public void checkOut()
