@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Stack;
 import java.io.*;
+import java.text.DecimalFormat;
 
 public class GUI implements ActionListener
 {
@@ -12,6 +13,8 @@ public class GUI implements ActionListener
 
     int cartCounter;
     double subtotal;
+
+    DecimalFormat df = new DecimalFormat("0.00");
 
     JPanel entryPanel = new JPanel();
     JLabel itemID = new JLabel("Enter item ID for Item #" + (cartCounter + 1) + ":");
@@ -166,6 +169,7 @@ public class GUI implements ActionListener
         addButton.addActionListener(e -> addCart());
         deleteButton.addActionListener(e -> deleteLast());
         emptyButton.addActionListener(e -> emptyCart());
+        checkoutButton.addActionListener(e -> checkOut());
 
 
         frame.setTitle("Nile Dot Com");
@@ -216,6 +220,8 @@ public class GUI implements ActionListener
         else if (curItem.getStock() == false)
         {
             JOptionPane.showMessageDialog(null, "Sorry, that item is out of stock, please try another item", "Nile Dot Com - ERROR", JOptionPane.ERROR_MESSAGE);  
+            itemIDEntry.setText("");
+            itemQuantityEntry.setText("");
             return;
         }
         else if (curItem.getQuantity() < itemQIn)
@@ -225,7 +231,7 @@ public class GUI implements ActionListener
         }
         else if (curItem.getStock() == true && curItem.getQuantity() >= itemQIn)
         {
-            itemDetailsDisplay.setText(curItem.toString() + " " + itemQIn + " " + calcDiscount(itemQIn) + "% $" + ((curItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
+            itemDetailsDisplay.setText(curItem.toString() + " " + itemQIn + " " + calcDiscount(itemQIn) + "% $" + df.format(((curItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         }
         addButton.setEnabled(true);
         searchButton.setEnabled(false);
@@ -250,30 +256,30 @@ public class GUI implements ActionListener
         switch (cartCounter)
         {
         case(1):
-        firstCartItem.setText("Item 1 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
+        firstCartItem.setText("Item 1 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(2):
-        secondCartItem.setText("Item 2 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
+        secondCartItem.setText("Item 2 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(3):
-        thirdCartItem.setText("Item 3 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
+        thirdCartItem.setText("Item 3 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(4):
-        fourthCartItem.setText("Item 4 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
+        fourthCartItem.setText("Item 4 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(5):
-        fifthCartItem.setText("Item 5 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + ((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
+        fifthCartItem.setText("Item 5 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
         }
 
         subtotal += (cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)));
 
 
-        itemSubtotalDisplay.setText("$" + subtotal);
+        itemSubtotalDisplay.setText("$" + df.format(subtotal));
         cartStatus.setText("Your Cart Currently Contains " + cartCounter + " Item(s)");
         itemIDEntry.setText("");
         itemQuantityEntry.setText("");
@@ -346,7 +352,7 @@ public class GUI implements ActionListener
         }
         else
         {
-            itemSubtotalDisplay.setText("$" + subtotal);
+            itemSubtotalDisplay.setText("$" + df.format(subtotal));
         }
         cartStatus.setText("Your Cart Currently Contains " + cartCounter + " Item(s)");
         itemID.setText("Enter Item ID for Item #" + (cartCounter + 1));
@@ -390,6 +396,11 @@ public class GUI implements ActionListener
         cart.clear();
     }
 
+    public void checkOut()
+    {
+
+    }
+
     private int calcDiscount(int quantity)
     {
         if (quantity <= 4)
@@ -413,5 +424,11 @@ public class GUI implements ActionListener
             return 0;
         }
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) 
+    {
+        throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
     }
 }
