@@ -410,7 +410,7 @@ public class GUI implements ActionListener
 
     }
 
-    private int calcDiscount(int quantity)
+    private int calcDiscount(int quantity) //helper method for bulk discount calculaton
     {
         if (quantity <= 4)
         {
