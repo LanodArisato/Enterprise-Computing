@@ -165,6 +165,7 @@ public class GUI implements ActionListener
         searchButton.addActionListener(e -> searchItem());
         addButton.addActionListener(e -> addCart());
         deleteButton.addActionListener(e -> deleteLast());
+        emptyButton.addActionListener(e -> emptyCart());
 
 
         frame.setTitle("Nile Dot Com");
@@ -196,7 +197,7 @@ public class GUI implements ActionListener
         } 
         catch (IOException e) 
         {
-            //TODO add a notification for not found
+            JOptionPane.showMessageDialog(null, "Inventory file not found", "Nile Dot Com - ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -289,7 +290,14 @@ public class GUI implements ActionListener
         searchButton.setText("Search for Item #" + (cartCounter + 1));
         addButton.setText("Add Item #" + (cartCounter + 1) + " To Cart");
 
-        //TODO cart is full if statement
+        if (cartCounter >= 5)
+        {
+            itemIDEntry.setEnabled(false);
+            itemQuantityEntry.setEnabled(false);
+
+            searchButton.setEnabled(false);
+            addButton.setEnabled(false);
+        }
         }
 
     private void deleteLast()
@@ -349,6 +357,37 @@ public class GUI implements ActionListener
 
         searchButton.setEnabled(true);
         addButton.setEnabled(false);
+
+        itemIDEntry.setEnabled(true);
+        itemQuantityEntry.setEnabled(true);
+    }
+
+    public void emptyCart()
+    {
+        cartCounter = 0;
+        subtotal = 0;
+
+        itemIDEntry.setEnabled(true);
+        itemQuantityEntry.setEnabled(true);
+
+        itemID.setText("Enter Item ID for Item #" + (cartCounter + 1));
+        itemQuantity.setText("Enter Quantity for Item #" + (cartCounter + 1));
+        itemSubtotal.setText("Current Subtotal for " + cartCounter + " Item(s)");
+        itemDetails.setText("Details for Item #" + (cartCounter + 1) + ":");
+        itemDetailsDisplay.setText("");
+        itemSubtotalDisplay.setText("");
+
+        cartStatus.setText("Your Cart is Currently Empty");
+        firstCartItem.setText("");
+        secondCartItem.setText("");
+        thirdCartItem.setText("");
+        fourthCartItem.setText("");
+        fifthCartItem.setText("");
+
+        searchButton.setText("Search for Item #" + (cartCounter + 1));
+        addButton.setText("Add Item #" + (cartCounter + 1) + " To Cart");
+        
+        cart.clear();
     }
 
     private int calcDiscount(int quantity)
