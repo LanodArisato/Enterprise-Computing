@@ -10,11 +10,14 @@ public class GUI implements ActionListener
 {
     JFrame frame = new JFrame();
 
+    int cartCounter;
+    double subtotal;
+
     JPanel entryPanel = new JPanel();
-    JLabel itemID = new JLabel("Enter item ID for Item #:");
-    JLabel itemQuantity = new JLabel("Enter quantity for Item #:");
-    JLabel itemDetails = new JLabel("Details for Item #:");
-    JLabel itemSubtotal = new JLabel("Current Subtotal for x item(s):");
+    JLabel itemID = new JLabel("Enter item ID for Item #" + (cartCounter + 1) + ":");
+    JLabel itemQuantity = new JLabel("Enter quantity for Item #" + (cartCounter + 1) + ":");
+    JLabel itemDetails = new JLabel("Details for Item #" + (cartCounter + 1) + ":");
+    JLabel itemSubtotal = new JLabel("Current Subtotal for " + (cartCounter) + " item(s):");
     JTextField itemIDEntry = new JTextField();
     JTextField itemQuantityEntry = new JTextField();
     JTextField itemDetailsDisplay = new JTextField();
@@ -31,8 +34,8 @@ public class GUI implements ActionListener
     Dimension cartBoxDimension = new Dimension(750,30);
 
     JPanel buttonPanel = new JPanel();
-    JButton searchButton = new JButton("Search for item #");
-    JButton addButton = new JButton("Add Item # To Cart");
+    JButton searchButton = new JButton("Search for Item #" + (cartCounter + 1));
+    JButton addButton = new JButton("Add Item #"+ (cartCounter + 1) + " To Cart");
     JButton deleteButton = new JButton("Delete Last Item Added To Cart");
     JButton checkoutButton = new JButton("Check Out");
     JButton emptyButton = new JButton("Empty Cart - Start A New Order");
@@ -40,8 +43,6 @@ public class GUI implements ActionListener
 
     HashMap<String, item> inventory = new HashMap<>();
     Stack<item> cart = new Stack<>();
-    int cartCounter;
-    double subtotal;
     
     public GUI()
     {
@@ -163,6 +164,7 @@ public class GUI implements ActionListener
         exitButton.addActionListener(e -> System.exit(0));
         searchButton.addActionListener(e -> searchItem());
         addButton.addActionListener(e -> addCart());
+        deleteButton.addActionListener(e -> deleteLast());
 
 
         frame.setTitle("Nile Dot Com");
@@ -207,21 +209,23 @@ public class GUI implements ActionListener
 
         if (curItem == null)
         {
-            //TODO error interrupt 
+            JOptionPane.showMessageDialog(null, "Item ID " + itemIn + " not in file", "Nile Dot Com - ERROR", JOptionPane.ERROR_MESSAGE); 
+            return;
         }
         else if (curItem.getStock() == false)
         {
-            //TODO OOS error
+            JOptionPane.showMessageDialog(null, "Sorry, that item is out of stock, please try another item", "Nile Dot Com - ERROR", JOptionPane.ERROR_MESSAGE);  
+            return;
         }
         else if (curItem.getQuantity() < itemQIn)
         {
-            //TODO quantity error
+            JOptionPane.showMessageDialog(null, "Insufficient stock. Only " + curItem.getQuantity() + " on hand. Please reduce the quantity.", "Nile Dot Com - ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         }
         else if (curItem.getStock() == true && curItem.getQuantity() >= itemQIn)
         {
-            itemDetailsDisplay.setText(curItem.toString() + " " + itemQIn + " " + calcDiscount(itemQIn) + "% $" + (curItem.getPrice() * (1 - (calcDiscount(itemQIn)/100))));
+            itemDetailsDisplay.setText(curItem.toString() + " " + itemQIn + " " + calcDiscount(itemQIn) + "% $" + ((curItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)))));
         }
-
         addButton.setEnabled(true);
         searchButton.setEnabled(false);
 
@@ -282,9 +286,70 @@ public class GUI implements ActionListener
         itemID.setText("Enter Item ID for Item #" + (cartCounter + 1));
         itemQuantity.setText("Enter Quantity for Item #" + (cartCounter + 1));
         itemSubtotal.setText("Current Subtotal for " + cartCounter + " Item(s)");
+        searchButton.setText("Search for Item #" + (cartCounter + 1));
+        addButton.setText("Add Item #" + (cartCounter + 1) + " To Cart");
 
-        
+        //TODO cart is full if statement
         }
+
+    private void deleteLast()
+    {
+        item toDelete = cart.peek();
+
+        String delID = toDelete.getID();
+
+        inventory.get(delID).adjustStock(toDelete.getQuantity());
+
+        switch (cartCounter)
+        {
+        case(1):
+        firstCartItem.setText("");
+        break;
+
+        case(2):
+        secondCartItem.setText("");
+        break;
+
+        case(3):
+        thirdCartItem.setText("");
+        break;
+
+        case(4):
+        fourthCartItem.setText("");
+        break;
+
+        case(5):
+        fifthCartItem.setText("");
+        break;
+        }
+
+        cart.pop();
+        cartCounter--;
+
+        itemIDEntry.setText("");
+        itemQuantityEntry.setText("");
+        itemDetailsDisplay.setText("");
+
+        subtotal = subtotal - ((toDelete.getPrice() * toDelete.getQuantity()) * (1 - (calcDiscount((toDelete.getQuantity())/100))));
+        
+        if (cartCounter == 0)
+        {
+            itemSubtotalDisplay.setText("");
+        }
+        else
+        {
+            itemSubtotalDisplay.setText("$" + subtotal);
+        }
+        cartStatus.setText("Your Cart Currently Contains " + cartCounter + " Item(s)");
+        itemID.setText("Enter Item ID for Item #" + (cartCounter + 1));
+        itemQuantity.setText("Enter Quantity for Item #" + (cartCounter + 1));
+        itemSubtotal.setText("Current Subtotal for " + cartCounter + " Item(s)");
+        searchButton.setText("Search for Item #" + (cartCounter + 1));
+        addButton.setText("Add Item #" + (cartCounter + 1) + " To Cart");
+
+        searchButton.setEnabled(true);
+        addButton.setEnabled(false);
+    }
 
     private int calcDiscount(int quantity)
     {

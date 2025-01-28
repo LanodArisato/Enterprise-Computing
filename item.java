@@ -51,12 +51,15 @@ public class item {
         return this.itemDesc;
     }
 
+    public String getID()
+    {
+        return this.itemID;
+    }
+
     public String getStockString()
     {
         return this.stockStatus;
     }
-
-
 
     public String toString()
     {
