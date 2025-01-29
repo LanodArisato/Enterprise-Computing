@@ -440,7 +440,7 @@ public class GUI
 
             out.write("\n");
             out.flush();
-            invoiceString += "\nOrder Subtotal: $" + subtotalFormat.format(subtotal) + "\n\nTax rate: \t6%\n\nTax amount:\t$" + subtotalFormat.format(subtotal * 0.06) + "\n\n ORDER TOTAL:\t$" + subtotalFormat.format(subtotal * 1.06) + "\n\nThanks for shopping at Nile Dot Com!";
+            invoiceString += "\nOrder Subtotal: $" + subtotalFormat.format(subtotal) + "\n\nTax rate: \t6%\n\nTax amount:\t$" + subtotalFormat.format(subtotal * 0.06) + "\n\nORDER TOTAL:\t$" + subtotalFormat.format(subtotal * 1.06) + "\n\nThanks for shopping at Nile Dot Com!";
 
 
             JOptionPane.showMessageDialog(null, new JTextArea(invoiceString), "Nile Dot Com - FINAL INVOICE", JOptionPane.PLAIN_MESSAGE);
