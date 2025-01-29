@@ -1,21 +1,22 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Stack;
 import java.io.*;
-import java.text.DateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.text.DecimalFormat;
 
-public class GUI implements ActionListener
+public class GUI
 {
     JFrame frame = new JFrame();    //Creates all objects for base GUI components
 
     int cartCounter;
     double subtotal;
 
-    DecimalFormat df = new DecimalFormat("0.00");
+    DecimalFormat subtotalFormat = new DecimalFormat("0.00");
+    DecimalFormat discountFormat = new DecimalFormat("0.0");
 
     JPanel entryPanel = new JPanel();
     JLabel itemID = new JLabel("Enter item ID for Item #" + (cartCounter + 1) + ":");
@@ -45,8 +46,8 @@ public class GUI implements ActionListener
     JButton emptyButton = new JButton("Empty Cart - Start A New Order");
     JButton exitButton = new JButton("Exit (Close App)");
 
-    HashMap<String, item> inventory = new HashMap<>();
-    Stack<item> cart = new Stack<>();
+    HashMap<String, Item> inventory = new HashMap<>();
+    Stack<Item> cart = new Stack<>();
     
     public GUI() //Runs methods inventory handling and base GUI construction, sets base state
     {
@@ -195,7 +196,7 @@ public class GUI implements ActionListener
             {
                 String curLine = in.nextLine();
                 String[] infoArr = curLine.split(", ");
-                item newItem = new item(infoArr[0], infoArr[1], infoArr[2], Integer.parseInt(infoArr[3]), Double.parseDouble(infoArr[4]));
+                Item newItem = new Item(infoArr[0], infoArr[1], infoArr[2], Integer.parseInt(infoArr[3]), Double.parseDouble(infoArr[4]));
 
                 inventory.put(infoArr[0], newItem);
             }
@@ -211,7 +212,7 @@ public class GUI implements ActionListener
         String itemIn = itemIDEntry.getText();
         int itemQIn = Integer.parseInt(itemQuantityEntry.getText());
 
-        item curItem = inventory.get(itemIn);
+        Item curItem = inventory.get(itemIn);
 
         if (curItem == null) //if inventory hasmap does not have an object for the given ID
         {
@@ -232,7 +233,7 @@ public class GUI implements ActionListener
         }
         else if (curItem.getStock() == true && curItem.getQuantity() >= itemQIn) //if the item is available AND quantity is available
         {
-            itemDetailsDisplay.setText(curItem.toString() + " " + itemQIn + " " + calcDiscount(itemQIn) + "% $" + df.format(((curItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+            itemDetailsDisplay.setText(curItem.toString() + " " + itemQIn + " " + calcDiscount(itemQIn) + "% $" + subtotalFormat.format(((curItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         }
 
         addButton.setEnabled(true); //set new button state for a found item
@@ -246,43 +247,43 @@ public class GUI implements ActionListener
         String itemIn = itemIDEntry.getText();
         int itemQIn = Integer.parseInt(itemQuantityEntry.getText());
 
-        item curItem = inventory.get(itemIn);
+        Item curItem = inventory.get(itemIn);
 
         //creates a new version of an item object for usage in the cart
-        item cartItem = new item(itemIn, curItem.getDesc(), curItem.getStockString(), itemQIn, curItem.getPrice(), true);
+        Item cartItem = new Item(itemIn, curItem.getDesc(), curItem.getStockString(), itemQIn, curItem.getPrice(), true);
 
         curItem.adjustStock(-itemQIn); //reduce the quantity in the inventory by the amount added to the cart
 
-        cart.add(cartItem); //add item to cart stack
+        cart.push(cartItem); //add item to cart stack
         cartCounter++;
 
         switch (cartCounter) //update text boxes based on current cart position
         {
         case(1):
-        firstCartItem.setText("Item 1 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        firstCartItem.setText("Item 1 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(2):
-        secondCartItem.setText("Item 2 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        secondCartItem.setText("Item 2 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(3):
-        thirdCartItem.setText("Item 3 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        thirdCartItem.setText("Item 3 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(4):
-        fourthCartItem.setText("Item 4 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        fourthCartItem.setText("Item 4 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(5):
-        fifthCartItem.setText("Item 5 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + df.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        fifthCartItem.setText("Item 5 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
         }
 
         subtotal += (cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100)));
 
         //update text fields based on new cart state
-        itemSubtotalDisplay.setText("$" + df.format(subtotal));
+        itemSubtotalDisplay.setText("$" + subtotalFormat.format(subtotal));
         cartStatus.setText("Your Cart Currently Contains " + cartCounter + " Item(s)");
         itemIDEntry.setText("");
         itemQuantityEntry.setText("");
@@ -313,7 +314,7 @@ public class GUI implements ActionListener
 
     private void deleteLast() //deletes the last item added to the cart while maintaining proper inventory values
     {
-        item toDelete = cart.peek(); 
+        Item toDelete = cart.peek(); 
 
         String delID = toDelete.getID();
 
@@ -359,7 +360,7 @@ public class GUI implements ActionListener
         }
         else
         {
-            itemSubtotalDisplay.setText("$" + df.format(subtotal));
+            itemSubtotalDisplay.setText("$" + subtotalFormat.format(subtotal));
         }
 
         //update GUI component states for new item entry
@@ -406,9 +407,51 @@ public class GUI implements ActionListener
         
     }
 
-    public void checkOut()
+    public void checkOut() //Create checkout dialogue as well as writes to output file
     {
+        BufferedWriter out;
+        try
+        {
+            out = new BufferedWriter(new FileWriter("transaction.csv",true));
 
+            DateTimeFormatter checkoutFormat = DateTimeFormatter.ofPattern("MMMM dd, yyyy, hh:mm:ss a z"); //set formats for later use
+            DateTimeFormatter transactionFormat = DateTimeFormatter.ofPattern("ddmmyyyhhmmss");
+            ZonedDateTime current = ZonedDateTime.now();
+
+            Stack<Item> checkoutStack = new Stack<>(); //create new stack of cart objects in added order
+
+            String timeString = current.format(checkoutFormat);
+            String transactionString = current.format(transactionFormat);
+
+            for(int i = cart.size(); i > 0; i--) //clears the cart and reversed item order for printing
+            {
+                checkoutStack.push(cart.pop());
+            }
+
+            String invoiceString = "Date: " + timeString + "\n\nNumber of line items: " + checkoutStack.size() + "\n\nItem# / ID / Title / Price / Qty / Disc % / Subtotal:\n\n";
+
+            for(int i = 0; i < cartCounter; i++) //goes through reversed stack and writes to diaglogue and output file
+            {
+                Item curItem = checkoutStack.pop();
+
+                out.write(transactionString + ", " + curItem.toTransaction() + ", " + discountFormat.format(this.calcDiscount(curItem.getQuantity())/100) + ", $" + subtotalFormat.format(((curItem.getPrice() * curItem.getQuantity()) * (1 - (calcDiscount(curItem.getQuantity()/100))))) +" " + timeString + "\n");
+                invoiceString += (i+1) + ". " + curItem.toString() + " " + curItem.getQuantity() + " " + calcDiscount(curItem.getQuantity()) + "% $" + subtotalFormat.format(((curItem.getPrice() * curItem.getQuantity()) * (1 - (calcDiscount(curItem.getQuantity()/100))))) + "\n";
+            }
+
+            out.write("\n");
+            out.flush();
+            invoiceString += "\nOrder Subtotal: $" + subtotalFormat.format(subtotal) + "\n\nTax rate: \t6%\n\nTax amount:\t$" + subtotalFormat.format(subtotal * 0.06) + "\n\n ORDER TOTAL:\t$" + subtotalFormat.format(subtotal * 1.06) + "\n\nThanks for shopping at Nile Dot Com!";
+
+
+            JOptionPane.showMessageDialog(null, new JTextArea(invoiceString), "Nile Dot Com - FINAL INVOICE", JOptionPane.PLAIN_MESSAGE);
+
+            cartCounter = 0;
+            this.emptyCart();
+        }
+        catch(IOException e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private int calcDiscount(int quantity) //helper method for bulk discount calculaton
@@ -434,11 +477,5 @@ public class GUI implements ActionListener
             return 0;
         }
 
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) 
-    {
-        throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
     }
 }

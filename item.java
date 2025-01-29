@@ -1,4 +1,4 @@
-public class item {
+public class Item {
     String itemID;
     String itemDesc;
     String stockStatus;
@@ -6,7 +6,7 @@ public class item {
     double price;
     boolean inCart;
 
-    public item(String itemID, String itemDesc,String stockStatus, int curStock, double price) //item object for inventory hashmap
+    public Item(String itemID, String itemDesc,String stockStatus, int curStock, double price) //item object for inventory hashmap
     {
         this.itemID = itemID;
         this.itemDesc = itemDesc;
@@ -16,7 +16,7 @@ public class item {
         this.inCart = false;
     }
 
-    public item(String itemID, String itemDesc,String stockStatus, int curStock, double price, boolean inCart) //item object for when an item is in cart
+    public Item(String itemID, String itemDesc,String stockStatus, int curStock, double price, boolean inCart) //item object for when an item is in cart
     {
         this.itemID = itemID;
         this.itemDesc = itemDesc;
@@ -60,6 +60,11 @@ public class item {
     public String getStockString()
     {
         return this.stockStatus;
+    }
+
+    public String toTransaction() //creates a string in the transaction file format
+    {
+        return this.itemID + ", " + this.itemDesc + ", " + this.price + ", " + this.curStock;
     }
 
     public String toString()
