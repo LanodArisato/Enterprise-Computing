@@ -260,23 +260,23 @@ public class GUI
         switch (cartCounter) //update text boxes based on current cart position
         {
         case(1):
-        firstCartItem.setText("Item 1 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        firstCartItem.setText("Item 1 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + subtotalFormat.format(cartItem.getPrice()) + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(2):
-        secondCartItem.setText("Item 2 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        secondCartItem.setText("Item 2 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + subtotalFormat.format(cartItem.getPrice()) + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(3):
-        thirdCartItem.setText("Item 3 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        thirdCartItem.setText("Item 3 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + subtotalFormat.format(cartItem.getPrice()) + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(4):
-        fourthCartItem.setText("Item 4 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        fourthCartItem.setText("Item 4 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + subtotalFormat.format(cartItem.getPrice()) + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
 
         case(5):
-        fifthCartItem.setText("Item 5 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + cartItem.getPrice() + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
+        fifthCartItem.setText("Item 5 - SKU: " + itemIn + ", Desc: " + cartItem.getDesc() + ", Price Ea. $" + subtotalFormat.format(cartItem.getPrice()) + ", Qty: " + itemQIn + ", Total: $" + subtotalFormat.format(((cartItem.getPrice() * itemQIn) * (1 - (calcDiscount(itemQIn/100))))));
         break;
         }
 
@@ -404,7 +404,8 @@ public class GUI
 
         searchButton.setText("Search for Item #" + (cartCounter + 1));
         addButton.setText("Add Item #" + (cartCounter + 1) + " To Cart");
-        
+
+        searchButton.setEnabled(true);
     }
 
     public void checkOut() //Create checkout dialogue as well as writes to output file
@@ -423,7 +424,7 @@ public class GUI
             String timeString = current.format(checkoutFormat);
             String transactionString = current.format(transactionFormat);
 
-            for(int i = cart.size(); i > 0; i--) //clears the cart and reversed item order for printing
+            for(int i = cart.size(); i > 0; i--) //clears the cart and reverses item order for printing
             {
                 checkoutStack.push(cart.pop());
             }
@@ -447,6 +448,7 @@ public class GUI
 
             cartCounter = 0;
             this.emptyCart();
+            subtotal = 0;
         }
         catch(IOException e)
         {
