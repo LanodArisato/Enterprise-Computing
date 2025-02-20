@@ -13,7 +13,7 @@ public class Switch {
     private int switchNum;
     private ReentrantLock lock = new ReentrantLock();
 
-    public Switch(int switchNum)
+    public Switch(int switchNum) //assign switch number from driver setup
     {
         this.switchNum = switchNum;
     }
@@ -23,12 +23,12 @@ public class Switch {
         return this.switchNum;
     }
 
-    public boolean lock()
+    public boolean lock() //lock switch
     {
         return lock.tryLock();
     }
 
-    public void unlock()
+    public void unlock() //unlock switch
     {
         lock.unlock();
     }

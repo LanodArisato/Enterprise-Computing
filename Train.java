@@ -13,7 +13,7 @@ public class Train implements Runnable
 {
     Random rand = new Random();
 
-    private static int dispatchCount = 1;
+    private static int dispatchCount = 1; //counter shared across train objects for dispatch order
 
     private String trainNum;
     private String plan;
@@ -21,7 +21,7 @@ public class Train implements Runnable
     private boolean dispatched;
     private int dispatchNum;
 
-    public Train(String trainNum, String plan)
+    public Train(String trainNum, String plan) //constructor with default values
     {
         this.trainNum = trainNum;
         this.plan = plan;
@@ -41,9 +41,9 @@ public class Train implements Runnable
     public void run()
     {
         Switch[] switchArr = Driver.getSwitches();
-        HashMap<String, String> yardMap = Driver.getYard();
+        HashMap<String, String> yardMap = Driver.getYard(); 
 
-        if (!yardMap.containsKey(plan))
+        if (!yardMap.containsKey(plan)) //check if a non-valid path is being taken and hold train
         {
             hold = true;
 
@@ -52,27 +52,27 @@ public class Train implements Runnable
             return;
         }
 
-        String[] path = yardMap.get(plan).split(",");
+        String[] path = yardMap.get(plan).split(","); //split switch order into an array for easy access
         
         while (true)
         {
-            if (switchArr[Integer.parseInt(path[0]) - 1].lock())
+            if (switchArr[Integer.parseInt(path[0]) - 1].lock()) //check is first lock is available
             {
 
                 System.out.println("Train " + trainNum + ": HOLDS LOCK on Switch " + switchArr[Integer.parseInt(path[0]) - 1].getSwitchNum() + ".");
 
-                if (switchArr[Integer.parseInt(path[1]) - 1].lock())
+                if (switchArr[Integer.parseInt(path[1]) - 1].lock()) //check if second lock is available
                 {
 
                     System.out.println("Train " + trainNum + ": HOLDS LOCK on Switch " + switchArr[Integer.parseInt(path[1]) - 1].getSwitchNum() + ".");
 
-                    if (switchArr[Integer.parseInt(path[2]) - 1].lock())
+                    if (switchArr[Integer.parseInt(path[2]) - 1].lock()) //check if third lock is available
                     {
                         System.out.println("Train " + trainNum + ": HOLDS LOCK on Switch " + switchArr[Integer.parseInt(path[2]) - 1].getSwitchNum() + ".");
 
-                        runTrain(path, switchArr);                        
+                        runTrain(path, switchArr); //if all locks are obtained, send train through                  
                     }
-                    else
+                    else //if third lock is unavailable, unlock prerequisite switches, then wait
                     {
                         System.out.println("Train " + trainNum + ": UNABLE TO LOCK third required switch: Switch " + (Integer.parseInt(path[2])) + ".");
                         System.out.println("Train " + trainNum + ": Releasing locks on first and second required switchs: Switch " + (Integer.parseInt(path[0])) + " and Switch " + (Integer.parseInt(path[1])) + ". Train will wait...");
@@ -82,7 +82,7 @@ public class Train implements Runnable
                         continue;
                     }
                 }
-                else
+                else //if second lock is unavailable, unlock prerequisite switches, then wait
                 {
                     System.out.println("Train " + trainNum + ": UNABLE TO LOCK second required switch: Switch " + (Integer.parseInt(path[1])) + ".");
                     System.out.println("Train " + trainNum + ": Releasing lock on first required switch: Switch " + (Integer.parseInt(path[0])) + ". Train will wait..." );
@@ -91,7 +91,7 @@ public class Train implements Runnable
                     continue;
                 }
             }
-            else
+            else //if first lock is unavailable, wait
             {
                 System.out.println("Train " + trainNum + ": UNABLE TO LOCK first required switch: Switch " + (Integer.parseInt(path[0])) + ". Train will wait..." );
                 trainWait();
@@ -102,7 +102,7 @@ public class Train implements Runnable
         }
     }
 
-    private void runTrain(String[] path, Switch[] switchArr)
+    private void runTrain(String[] path, Switch[] switchArr) //when all locks are available, simulate yard movement and unlock locks 
     {
 
         System.out.println("\nTrain " + trainNum + ": HOLDS ALL NEEDED SWITCH LOCKS - Train movement begins.\n");
@@ -131,7 +131,7 @@ public class Train implements Runnable
         dispatchCount++;
     }
 
-    private void trainWait()
+    private void trainWait() //if a lock is unavailble, wait and try again
     {
         try
         {
@@ -143,7 +143,7 @@ public class Train implements Runnable
         }
     }
 
-    public String toString()
+    public String toString() //output format for train information in driver output
     {
         HashMap<String,String> yardMap = Driver.getYard();
         String[] inOut = plan.split(",");
