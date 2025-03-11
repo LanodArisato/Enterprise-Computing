@@ -30,47 +30,28 @@ public class ResultSetTableModel extends AbstractTableModel
    
    // constructor initializes resultSet and obtains its meta data object;
    // determines number of rows
-   public ResultSetTableModel( String query ) 
+   public ResultSetTableModel( String query, Connection userConn, Connection logConn) 
       throws SQLException, ClassNotFoundException
    {         
-	   Properties properties = new Properties();
-      Properties prop = new Properties();
-	   FileInputStream filein = null;
-	   MysqlDataSource dataSource = null;
-       //read properties file
-	   try {
-	    	filein = new FileInputStream("root.properties");
-	    	properties.load(filein);
-         prop.load(new FileInputStream("project3.properties"));
-	    	dataSource = new MysqlDataSource();
-	    	dataSource.setURL(prop.getProperty("MYSQL_DB_URL"));
-	    	dataSource.setUser(properties.getProperty("MYSQL_DB_USERNAME"));
-	    	dataSource.setPassword(properties.getProperty("MYSQL_DB_PASSWORD")); 	
-	    
-            // connect to database bikes and query database
-  	        // establish connection to database
-   	        Connection connection = dataSource.getConnection();
-	
             // create Statement to query database
-            statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY );
+            statement = userConn.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY );
 
             // update database connection status
             connectedToDatabase = true;
 
             // set query and execute it
-            setQuery( query );
+            if (query.toLowerCase().startsWith("select"))
+            {
+               setQuery(query);
+            }
+            else
+            {
+               setUpdate(query);
+            }
+            
 		
 		    //set update and execute it
 		    //setUpdate (query);
-	  } //end try
-      catch ( SQLException sqlException ) 
-      {
-         sqlException.printStackTrace();
-         System.exit( 1 );
-      } // end catch
-      catch (IOException e) {
-   	     e.printStackTrace();
-      }  
    } // end constructor ResultSetTableModel
 
    // get class that represents column type
