@@ -8,8 +8,6 @@ import java.util.Properties;
 import javax.swing.*;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
-import com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException;
-import com.mysql.cj.x.protobuf.MysqlxExpect;
 
 public class ClientApp extends JPanel
 {
@@ -187,12 +185,14 @@ public class ClientApp extends JPanel
 			MysqlDataSource logSrc = new MysqlDataSource();
 
 			Properties logProp = new Properties();
+			Properties logLogin = new Properties();
 			Properties dbProp = new Properties();
 			Properties userProp = new Properties();
 
 			dbProp.load(new FileInputStream(dbDrop.getSelectedItem().toString()));
 			userProp.load(new FileInputStream(userDrop.getSelectedItem().toString()));
 			logProp.load(new FileInputStream("operationslog.properties"));
+			logLogin.load(new FileInputStream("project3app.properties"));
 
 			String username = userEntry.getText();
 			String password = new String(passEntry.getPassword());
@@ -220,6 +220,9 @@ public class ClientApp extends JPanel
 				return;
 			}
 
+			logSrc.setUser(logLogin.getProperty("MYSQL_DB_USERNAME"));
+			logSrc.setPassword(logLogin.getProperty("MYSQL_DB_PASSWORD"));
+
 			logConn = logSrc.getConnection();
 			userConn = userSrc.getConnection();
 			connectionLabel.setText("CONNECTED TO: " + dbProp.getProperty("MYSQL_DB_URL"));
@@ -244,8 +247,12 @@ public class ClientApp extends JPanel
 				try
 				{
 					resTable = new ResultSetTableModel(comEntry.getText(), userConn, logConn);
-					outTable.setModel(resTable);
-					outTable.repaint();
+
+					if (comEntry.getText().toLowerCase().startsWith("select")) {
+						outTable.setModel(resTable);
+						outTable.repaint();
+					} 
+
 				} // end try
 				catch (SQLException sqlException)
 				{
