@@ -1,3 +1,12 @@
+package Project3;
+/*
+Name: Landon Morjal
+Course: CNT 4714 Spring 2025
+Assignment title: Project 3 – A Two-tier Client-Server Application
+Date: March 14, 2025
+Class: ClientApp
+*/
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileInputStream;
@@ -22,7 +31,7 @@ public class ClientApp extends JPanel
 	private JLabel username;
 	private JLabel pass;
 	private JPasswordField passEntry;
-	private JTextArea userEntry;
+	private JTextField userEntry;
 	private JLabel comLabel;
 	private JTextArea comEntry;
 	private JButton connectBut;
@@ -50,7 +59,7 @@ public class ClientApp extends JPanel
 		username = new JLabel ("Username");
 		pass = new JLabel ("Password");
 		passEntry = new JPasswordField();
-		userEntry = new JTextArea (5, 5);
+		userEntry = new JTextField ();
 		comLabel = new JLabel ("Enter A SQL Command");
 		comEntry = new JTextArea (5, 5);
 		connectBut = new JButton ("Connct to Database");
@@ -62,6 +71,20 @@ public class ClientApp extends JPanel
 		resultLabel = new JLabel ("SQL Execution Result Window");
 		clearResBut = new JButton ("Clear Result Window");
 		closeBut = new JButton ("Close Application");
+
+		connectionLabel.setForeground(Color.RED);
+		connectionLabel.setBackground(Color.GRAY);
+        connectionLabel.setFont(new Font("Arial",Font.BOLD,20));
+		connectionLabel.setOpaque(true);
+
+		connectBut.setBackground(Color.GREEN);
+		dcBut.setBackground(Color.CYAN);
+
+		clearComBut.setBackground(Color.ORANGE);
+		execBut.setBackground(Color.YELLOW);
+
+		clearResBut.setBackground(Color.MAGENTA);
+		closeBut.setBackground(new Color(0xBF0A30));
 
 		//adjust size and set layout
 		setPreferredSize (new Dimension (945, 865));
@@ -115,7 +138,7 @@ public class ClientApp extends JPanel
 		clearComBut.setBounds (450, 250, 220, 45);
 		execBut.setBounds (710, 250, 220, 45);
 		outPane.setBounds (15, 410, 920, 365);
-		connectionLabel.setBounds (200, 317, 485, 55);
+		connectionLabel.setBounds (15, 317, 920, 45);
 		resultLabel.setBounds (15, 375, 225, 30);
 		clearResBut.setBounds (20, 780, 235, 50);
 		closeBut.setBounds (695, 780, 235, 50);
@@ -161,14 +184,16 @@ public class ClientApp extends JPanel
 	{
 		try
 		  {
-			if (userConn != null && !userConn.isClosed())
+			if (userConn != null && !userConn.isClosed()) //check if a connection is active
 			{
-				userConn.close();
+				userConn.close(); //close log and user connections
 				logConn.close();
 
 				connectionLabel.setText("Disconnected from database");
 				userEntry.setText("");
 				passEntry.setText("");
+
+				outTable.setModel(new JTable().getModel()); //empty output table
 			}
 		}
 		catch (SQLException e)
@@ -189,6 +214,7 @@ public class ClientApp extends JPanel
 			Properties dbProp = new Properties();
 			Properties userProp = new Properties();
 
+			//open properties files
 			dbProp.load(new FileInputStream(dbDrop.getSelectedItem().toString()));
 			userProp.load(new FileInputStream(userDrop.getSelectedItem().toString()));
 			logProp.load(new FileInputStream("operationslog.properties"));
@@ -197,9 +223,11 @@ public class ClientApp extends JPanel
 			String username = userEntry.getText();
 			String password = new String(passEntry.getPassword());
 
+			//set urls for user selected and log
 			logSrc.setURL(logProp.getProperty("MYSQL_DB_URL"));
 			userSrc.setURL(dbProp.getProperty("MYSQL_DB_URL"));
-
+			
+			//check if username is correct
 			if (username.compareTo(userProp.getProperty("MYSQL_DB_USERNAME")) == 0)
 			{
 				userSrc.setUser(username);
@@ -210,6 +238,7 @@ public class ClientApp extends JPanel
 				return;
 			}
 
+			//check is password is correct
 			if (password.compareTo(userProp.getProperty("MYSQL_DB_PASSWORD")) == 0)
 			{
 				userSrc.setPassword(password);
@@ -220,9 +249,11 @@ public class ClientApp extends JPanel
 				return;
 			}
 
+			//if both if statements succeed set properties
 			logSrc.setUser(logLogin.getProperty("MYSQL_DB_USERNAME"));
 			logSrc.setPassword(logLogin.getProperty("MYSQL_DB_PASSWORD"));
 
+			//set connections
 			logConn = logSrc.getConnection();
 			userConn = userSrc.getConnection();
 			connectionLabel.setText("CONNECTED TO: " + dbProp.getProperty("MYSQL_DB_URL"));
@@ -242,16 +273,20 @@ public class ClientApp extends JPanel
 	{
 		try
 		{
-			if (userConn != null && !userConn.isClosed())
+			if (userConn != null && !userConn.isClosed()) //ensure a connection is live
 			{		
 				try
 				{
-					resTable = new ResultSetTableModel(comEntry.getText(), userConn, logConn);
+					resTable = new ResultSetTableModel(comEntry.getText(), userConn, logConn); //run query
 
-					if (comEntry.getText().toLowerCase().startsWith("select")) {
+					if (comEntry.getText().toLowerCase().startsWith("select")) { //check query type
 						outTable.setModel(resTable);
 						outTable.repaint();
-					} 
+					}
+					else
+					{
+						outTable.setModel(new JTable().getModel());
+					}
 
 				} // end try
 				catch (SQLException sqlException)

@@ -1,8 +1,19 @@
+package Project3;
+/*
+Name: Landon Morjal
+Course: CNT 4714 Spring 2025
+Assignment title: Project 3 – A Two-tier Client-Server Application
+Date: March 14, 2025
+Class: ResultSetTableModel
+*/
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 // ResultSet rows and columns are counted from 1 and JTable 
@@ -30,12 +41,12 @@ public class ResultSetTableModel extends AbstractTableModel {
         userConnect = userConn;
         logConnect = logConn;
 
-        statement = userConnect.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        statement = userConnect.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY); //utilize prepared statement
         curUser = userConnect.getMetaData().getUserName();
 
         connectedToDatabase = true;
 
-        if (query.toLowerCase().startsWith("select")) {
+        if (query.toLowerCase().startsWith("select")) { //check query type
             setQuery();
         } else {
             setUpdate();
@@ -123,7 +134,7 @@ public class ResultSetTableModel extends AbstractTableModel {
 
 		PreparedStatement logStatement = logConnect.prepareStatement(logQuery);
 		logStatement.setString(1, curUser);
-		logStatement.executeUpdate();
+		logStatement.executeUpdate(); //update log db for user's querys
     }
 
     // set new database update-query string
@@ -131,16 +142,18 @@ public class ResultSetTableModel extends AbstractTableModel {
         if (!connectedToDatabase) 
             throw new IllegalStateException("Not Connected to Database");
         
-        statement.executeUpdate();
+        int updated = statement.executeUpdate();
 
 		String logQuery = "INSERT INTO operationscount (login_username, num_queries, num_updates) VALUES(?, 0, 1) ON DUPLICATE KEY UPDATE num_updates = num_updates + 1;";
 
 		PreparedStatement logStatement = logConnect.prepareStatement(logQuery);
 		logStatement.setString(1, curUser);
-		logStatement.executeUpdate();
+		logStatement.executeUpdate(); //update log db for user's updates
+
+        JOptionPane.showMessageDialog( null, "Successful Update..." + updated + " rows updated.", "Successful Update", JOptionPane.INFORMATION_MESSAGE); //update popup
     }
 
-    // close Statement and Connection
+    // close Statement and Connection 
     public void disconnectFromDatabase() {
         if (!connectedToDatabase) 
             return;
