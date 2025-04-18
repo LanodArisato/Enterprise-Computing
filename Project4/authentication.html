@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Authentication</title>
+  <style>
+    body {
+      background-color: black;
+      color: yellow;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    h1 {
+      color: white;
+    }
+    h2 {
+      color: pink;
+    }
+    h3 {
+      color: teal;
+    }
+    .form-container {
+      margin-top: 50px;
+      display: inline-block;
+      background-color: #111;
+      padding: 30px;
+      border: 1px solid gray;
+      border-radius: 8px;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-size: 18px;
+      text-align: left;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 250px;
+      padding: 8px;
+      background-color: #665c1e;
+      border: 2px solid #999900;
+      color: white;
+      font-size: 16px;
+    }
+    .submit-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: black;
+      color: rgb(2, 225, 255);;
+      border: 2px solid rgb(2, 225, 255);;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .submit-btn:hover {
+      background-color: rgb(2, 48, 54);
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to the Spring 2025 Project 4 Enterprise System</h1>
+  <h2>A Servlet/JSP-based Multi-tiered Enterprise Application Using A Tomcat Container</h2>
+  <h3>- User Authentication Page -</h3>
+
+  <div class="form-container">
+    <form action="#" method="post">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+
+      <br>
+      <input type="submit" class="submit-btn" value="Click To Authenticate">
+    </form>
+  </div>
+</body>
+</html>

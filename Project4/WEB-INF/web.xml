@@ -1,0 +1,19 @@
+<web-app>
+    <display-name>
+        CNT 4714 Spring 2025 Project 4
+    </display-name>
+    <description>
+        Landon Morjal's submission of Project 4
+    </description>
+    <servlet>
+        <description>
+            A simple webapp for SQL database operation
+        </description>
+        <servlet-name>alpha</servlet-name>
+        <servlet-class>authentication</servlet-class>
+    </servlet>
+
+    <welcome-file-list>
+        <welcome-file>authentication.html</welcome-file>
+    </welcome-file-list>
+</web-app>
