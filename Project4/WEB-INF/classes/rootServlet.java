@@ -1,9 +1,7 @@
 import java.io.*;
 import java.sql.*;
 import java.util.*;
-
 import com.mysql.cj.jdbc.MysqlDataSource;
-
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
@@ -31,7 +29,8 @@ public class rootServlet extends HttpServlet
 
             boolean hasResultSet = statement.execute();
 
-            if (hasResultSet) {
+            if (hasResultSet) 
+            {
                 ResultSet rs = statement.getResultSet();
                 ResultSetMetaData rsmd = rs.getMetaData();
                 int columns = rsmd.getColumnCount();
@@ -48,7 +47,8 @@ public class rootServlet extends HttpServlet
                 // Fetch each row
                 while (rs.next()) {
                     List<String> row = new ArrayList<>();
-                    for (int i = 1; i <= columns; i++) {
+                    for (int i = 1; i <= columns; i++) 
+                    {
                         row.add(rs.getString(i));
                     }
                     results.add(row);
@@ -58,8 +58,19 @@ public class rootServlet extends HttpServlet
             } 
             else 
             {
-                int updated = statement.getUpdateCount();
-                req.setAttribute("message", "Command executed. Rows affected: " + updated);
+                if (input.toLowerCase().contains("into shipments") || input.toLowerCase().contains("update shipments"))
+                {
+                    String updateSupplierSQL = "Update suppliers set status = status + 5 where snum in (select snum from shipments where quantity >= 100)";
+                    PreparedStatement updateSQL = connect.prepareStatement(updateSupplierSQL);
+                    int suppliersUpdated = updateSQL.executeUpdate();
+                    req.setAttribute("message", "Command executed. Rows affected: " + statement.getUpdateCount() + ". Business logic detected: " + suppliersUpdated + " suppliers updated");
+                }
+                else
+                {
+                    req.setAttribute("message", "Command executed. Rows affected: " + statement.getUpdateCount() + ". Business logic not triggered.");
+                }
+                
+
             }
 
             statement.close();
@@ -69,7 +80,7 @@ public class rootServlet extends HttpServlet
             req.setAttribute("error", "Error: " + e.getMessage());
         }
 
-        RequestDispatcher dispatcher = req.getRequestDispatcher("rootPage.jsp");
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/rootPage.jsp");
         dispatcher.forward(req, resp);
     }
 }

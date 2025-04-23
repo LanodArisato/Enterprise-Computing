@@ -23,7 +23,7 @@
         <url-pattern>/auth</url-pattern>
     </servlet-mapping>
 
-        <servlet>
+    <servlet>
         <servlet-name>rootServlet</servlet-name>
         <servlet-class>rootServlet</servlet-class>
     </servlet>
@@ -31,6 +31,66 @@
     <servlet-mapping>
         <servlet-name>rootServlet</servlet-name>
         <url-pattern>/root</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>clientServlet</servlet-name>
+        <servlet-class>clientServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>clientServlet</servlet-name>
+        <url-pattern>/client</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>supplierInsertServlet</servlet-name>
+        <servlet-class>supplierInsertServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>supplierInsertServlet</servlet-name>
+        <url-pattern>/supplierInsert</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>partInsertServlet</servlet-name>
+        <servlet-class>partInsertServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>partInsertServlet</servlet-name>
+        <url-pattern>/partInsert</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>jobInsertServlet</servlet-name>
+        <servlet-class>jobInsertServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>jobInsertServlet</servlet-name>
+        <url-pattern>/jobInsert</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>shipmentInsertServlet</servlet-name>
+        <servlet-class>shipmentInsertServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>shipmentInsertServlet</servlet-name>
+        <url-pattern>/shipmentInsert</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>accountantServlet</servlet-name>
+        <servlet-class>accountantServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>accountantServlet</servlet-name>
+        <url-pattern>/accountant</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

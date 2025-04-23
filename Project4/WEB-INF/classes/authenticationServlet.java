@@ -36,11 +36,11 @@ public class authenticationServlet extends HttpServlet
                 if (username.equals("root"))
                     resp.sendRedirect("/Project-4/rootPage.jsp");
                 else if (username.equals("client"))
-                    resp.sendRedirect("/Project-4/clientPage.html");
+                    resp.sendRedirect("/Project-4/clientPage.jsp");
                 else if (username.equals("dataentry"))
-                    resp.sendRedirect("/Project-4/dataEntryPage.html");
+                    resp.sendRedirect("/Project-4/dataEntryHome.jsp");
                 else if (username.equals("theaccountant"))
-                    resp.sendRedirect("/Project-4/accountantPage.html");   
+                    resp.sendRedirect("/Project-4/accountantHome.jsp");   
             }
             else
             {
