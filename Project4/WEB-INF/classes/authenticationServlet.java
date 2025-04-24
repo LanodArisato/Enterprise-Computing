@@ -1,3 +1,9 @@
+/* Name: Landon Morjal
+Course: CNT 4714 – Spring 2025 – Project Four
+Assignment title: A Three-Tier Distributed Web-Based Application
+Date: April 23, 2025
+*/
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.*;
