@@ -1,50 +1,40 @@
-# 🚂 Project 2: Multi-threaded Programming in Java  
+# 🚂 Train Yard – Java Multi-Threaded Simulation  
 
-## 📖 Project Overview  
-This project is a **Java-based multi-threaded simulation** of a railroad switch yard, designed to demonstrate **multi-threaded programming, synchronization, and resource management**.  
+## 📖 Overview  
+Train Yard is a **Java-based simulation** that models the operation of a railway switch yard under **multi-threaded programming principles**. The project demonstrates concurrency, synchronization, and deadlock avoidance while simulating trains moving through a yard with shared switches.  
 
-The simulation models **Precision Scheduled Railroading (PSR)**, where trains focus on moving cars efficiently rather than waiting for long trains to form. Each train must acquire control of specific switches to move from its inbound track to its outbound track.  
-
-To avoid deadlock and ensure fairness, trains acquire switches in order. If a required switch is unavailable, the train releases all currently held switches, waits a random time, and retries.  
+Trains act as concurrent threads, acquiring and releasing switch locks in order to safely move from inbound to outbound tracks. Configurations are defined in input files for both the yard and the fleet.  
 
 ---
 
 ## ✨ Features  
-- **Multi-threaded Simulation**  
-  - Each train is represented as a separate thread.  
-  - Threads are managed by an `ExecutorService` with a fixed thread pool (max 30 trains).  
-
-- **Synchronization with Locks**  
-  - Uses `ReentrantLock` from `java.util.concurrent.locks`.  
-  - Prevents simultaneous train movements through the yard.  
-  - Ensures orderly switch acquisition/release.  
-
-- **Configurable Yard & Fleet**  
-  - **`theFleetFile.csv`**: Defines train fleet (train number, inbound track, outbound track).  
-  - **`theYardFile.csv`**: Defines valid switch alignments for inbound/outbound paths.  
-
-- **Deadlock Avoidance**  
-  - Trains acquire switches in a strict order (first, second, third).  
-  - If acquisition fails, trains release all locks and retry after waiting.  
-
-- **Simulation Output**  
-  - Logs every significant event:  
-    - Switch acquisition/release  
-    - Train dispatch  
-    - Permanent holds for invalid paths  
-    - Simulation start and end messages  
+- **Threaded Train Simulation**: Each train runs as a thread managed by an `ExecutorService`.  
+- **Lock-Based Synchronization**: Switches are controlled with `ReentrantLock` to prevent race conditions.  
+- **Deadlock Avoidance**: Trains acquire switches in strict order; if blocked, they release and retry later.  
+- **Configurable Yard & Fleet**:  
+  - `theYardFile.csv` defines valid track-to-switch mappings.  
+  - `theFleetFile.csv` defines trains with inbound and outbound tracks.  
+- **Event Logging**: Console output logs train actions such as acquiring/releasing switches, waiting on holds, and completing movements.  
 
 ---
 
 ## 📂 Files  
-- **`theFleetFile.csv`** – Defines train fleet (train number, inbound track, outbound track).  
-- **`theYardFile.csv`** – Defines switch alignment configurations (inbound track, switches required, outbound track).  
-- **`*.java`** – Source files implementing yard, trains, and synchronization logic.  
-- **`output.txt`** – Console output redirected to file, showing a complete simulation run.  
+- **Source Files**  
+  - `Train.java` – Represents a train as a thread (`Runnable`).  
+  - `Switch.java` – Models a yard switch with locking functionality.  
+  - `Yard.java` – Stores yard configurations and validates train paths.  
+  - `Simulator.java` – Main driver, initializes yard, fleet, and runs simulation.  
+
+- **Input Files**  
+  - `theFleetFile.csv` – Train fleet (train number, inbound track, outbound track).  
+  - `theYardFile.csv` – Yard configurations (inbound track, switch sequence, outbound track).  
 
 ---
 
-## 📸 Simulation Events Logged  
-The simulator produces detailed output for:  
-
-1. **Train acquires a switch**  
+## 🛠 Tech Stack  
+- **Language**: Java  
+- **Concurrency Tools**:  
+  - `ExecutorService` (fixed thread pool, max 30 trains)  
+  - `ReentrantLock` for synchronization  
+- **Input Format**: CSV (`theFleetFile.csv`, `theYardFile.csv`)  
+- **Output**: Console logs (can be redirected to file)  
