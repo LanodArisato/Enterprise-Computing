@@ -1,4 +1,4 @@
-# 🛒 Nile Dot Com – Java E-Store Simulation  
+# 🛒 Project 1: Event Driven Programming 
 
 ## 📖 Project Overview  
 This project is a **Java-based GUI application** that simulates a simplified e-store called **Nile Dot Com** (a nod to Amazon.com).  
