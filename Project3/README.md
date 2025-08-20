@@ -1,7 +1,5 @@
 # 🗄️ Project 3: A Two-Tier Client-Server Application Using MySQL and JDBC
 
----
-
 ## 📖 Overview  
 This project focuses on building a **two-tier Java client-server application** that connects to a **MySQL database** using **JDBC**. The goal is to gain hands-on experience with **JDBC features**, database connectivity, and permissions management through different client roles.  
 
@@ -62,4 +60,5 @@ In addition, the application maintains a **transaction log** in a separate datab
   - Properties files for user credentials and DB connection details.  
 
 ---
+
 
