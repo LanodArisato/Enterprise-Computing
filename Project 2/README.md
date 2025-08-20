@@ -1,4 +1,4 @@
-# 🚂 Train Yard – Java Multi-Threaded Simulation  
+# 🚂 Project 2: Train Yard – Java Multi-Threaded Simulation  
 
 ## 📖 Overview  
 Train Yard is a **Java-based simulation** that models the operation of a railway switch yard under **multi-threaded programming principles**. The project demonstrates concurrency, synchronization, and deadlock avoidance while simulating trains moving through a yard with shared switches.  
@@ -38,3 +38,4 @@ Trains act as concurrent threads, acquiring and releasing switch locks in order 
   - `ReentrantLock` for synchronization  
 - **Input Format**: CSV (`theFleetFile.csv`, `theYardFile.csv`)  
 - **Output**: Console logs (can be redirected to file)  
+
