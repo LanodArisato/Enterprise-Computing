@@ -1,4 +1,4 @@
-# 🗄️ Project Three: A Two-Tier Client-Server Application Using MySQL and JDBC
+# 🗄️ Project 3: A Two-Tier Client-Server Application Using MySQL and JDBC
 
 ---
 
@@ -62,3 +62,4 @@ In addition, the application maintains a **transaction log** in a separate datab
   - Properties files for user credentials and DB connection details.  
 
 ---
+
